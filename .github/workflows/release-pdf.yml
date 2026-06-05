@@ -1,0 +1,67 @@
+name: Release Constitution PDF
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release-pdf:
+    name: Build and release PDF
+    runs-on: ubuntu-slim
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+
+      - name: Setup Typst
+        uses: typst-community/setup-typst@v4
+        with:
+          typst-version: 0.13.1
+
+      - name: Compile PDF
+        run: typst compile constitution.typ constitution.pdf
+
+      - name: Attest PDF provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: constitution.pdf
+
+      - name: Set release metadata
+        id: release-meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="pdf-${{ github.sha }}-manual-${{ github.run_number }}"
+          else
+            tag="pdf-${{ github.sha }}"
+          fi
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "name=KDIX.Garage Constitution PDF - $tag" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release-meta.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: ${{ steps.release-meta.outputs.name }}
+          body: |
+            This release contains the PDF generated from `constitution.typ`.
+
+            Verify the provenance attestation with:
+
+            ```sh
+            gh attestation verify constitution.pdf --repo ${{ github.repository }}
+            ```
+          files: constitution.pdf
