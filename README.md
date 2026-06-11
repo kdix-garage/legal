@@ -1,43 +1,83 @@
-# KDIX.Garage Legal Documents
+# KDIX.Garage Legal
 
-`constitution.typ` is the source of truth for the KDIX.Garage constitution.
+KDIX.Garage の規約文書を公開するための Astro サイトです。Cloudflare Workers Static Assets で配信します。
 
-## Build Locally
+## Documents
 
-Install Typst and Noto Sans CJK JP, then run:
+規約本文は `docs/constitution.md` に置いています。
 
-```sh
-typst compile constitution.typ constitution.pdf
-```
-
-## Release PDF
-
-When a commit is pushed to `main`, GitHub Actions builds `constitution.pdf` from `constitution.typ` and creates a GitHub Release.
-
-You can also run the workflow manually from GitHub Actions, or with GitHub CLI:
-
-```sh
-gh workflow run release-pdf.yml
-```
-
-Release tags use the commit SHA:
+Astro は `docs/*.md` を読み込み、トップページに文書一覧を表示します。ファイル名がそのまま URL パスになります。
 
 ```text
-pdf-<commit-sha>
+docs/constitution.md -> /constitution
+docs/privacy_policy.md -> /privacy_policy
+docs/consumer_shopping_info.md -> /consumer_shopping_info
 ```
 
-Manual releases include the workflow run number to avoid tag conflicts:
+各 Markdown には一覧表示用の frontmatter を設定します。
 
-```text
-pdf-<commit-sha>-manual-<run-number>
+```md
+---
+title: KDIX.Garage 規約
+description: KDIX.Garage の規約
+emoji: 📜
+updatedAt: "2026-06-10"
+---
 ```
 
-## Verify Attestation
+## Development
 
-Download `constitution.pdf` from a GitHub Release, then verify its provenance:
+依存関係をインストールします。
 
 ```sh
-gh attestation verify constitution.pdf --repo OWNER/REPO
+pnpm install
 ```
 
-Replace `OWNER/REPO` with the repository name.
+開発サーバーを起動します。
+
+```sh
+pnpm run dev
+```
+
+本番ビルドを確認します。
+
+```sh
+pnpm run build
+```
+
+Wrangler のローカル開発サーバーで Workers Static Assets として確認します。
+
+```sh
+pnpm run worker:dev
+```
+
+## Deploy
+
+デプロイ前に Wrangler 設定を検証します。
+
+```sh
+pnpm run deploy:dry-run
+```
+
+手元からデプロイする場合は次を実行します。
+
+```sh
+pnpm run deploy
+```
+
+## Cloudflare Workers
+
+Worker は `wrangler.jsonc` で設定しています。
+
+```text
+Worker name: kdix-garage-legal
+Assets directory: dist
+Custom domain: legal.kdix.dev
+```
+
+GitHub Actions からデプロイするには、Repository secrets に次を設定します。
+
+```text
+CLOUDFLARE_ACCOUNT_ID
+CLOUDFLARE_API_TOKEN
+```
