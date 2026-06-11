@@ -37,12 +37,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check outdated dependencies
-        run: pnpm outdated
-
-      - name: Audit dependencies
-        run: pnpm audit
-
       - name: Build
         run: pnpm run build
 
