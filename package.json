@@ -1,0 +1,25 @@
+{
+  "name": "legal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.2",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "worker:dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:dry-run": "wrangler deploy --dry-run",
+    "astro": "astro"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.9",
+    "@tailwindcss/typography": "0.5.20",
+    "@tailwindcss/vite": "4.3.0",
+    "astro": "6.4.5",
+    "tailwindcss": "4.3.0",
+    "typescript": "6.0.3",
+    "wrangler": "4.99.0"
+  }
+}

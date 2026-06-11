@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import { legalDocuments, type LegalDocument } from '../lib/legal-documents';
+
+export function getStaticPaths() {
+  return legalDocuments.map((document) => ({
+    params: { slug: document.slug },
+    props: { document },
+  }));
+}
+
+type Props = {
+  document: LegalDocument;
+};
+
+const { document } = Astro.props;
+const Content = document.Content;
+const description = document.description || `${document.title} - KDIX.Garage Legal`;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{document.title}</title>
+  </head>
+  <body>
+    <main class="mx-auto min-h-screen max-w-3xl px-5 py-10 sm:px-8 sm:py-14">
+      <article class="relative">
+        <a
+          class="absolute right-4 top-4 rounded-md border border-neutral-200 bg-white px-3 py-1.5 text-xs font-medium text-neutral-700"
+          href={document.historyUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          変更履歴
+        </a>
+
+        <header class="mb-10 border-b border-neutral-200 pb-6 pr-24">
+          <a class="mb-5 inline-block text-sm font-medium text-neutral-500" href="/">← 一覧へ戻る</a>
+          <p class="mb-3 text-sm font-medium tracking-wide text-neutral-500">KDIX.Garage Legal</p>
+          <h1 class="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl">{document.title}</h1>
+          <dl class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-neutral-600">
+            <div class="flex gap-2 items-baseline">
+              <dt class="font-medium text-neutral-500">URLパス</dt>
+              <dd class="font-mono text-neutral-800">{document.path}</dd>
+            </div>
+            <div class="flex gap-2 items-baseline">
+              <dt class="font-medium text-neutral-500">最終更新</dt>
+              <dd class="font-mono text-neutral-800">{document.updatedAt}</dd>
+            </div>
+          </dl>
+        </header>
+
+        <div class="prose prose-neutral max-w-none prose-headings:scroll-mt-8 prose-h1:hidden prose-h2:mt-10 prose-h2:border-b prose-h2:border-neutral-200 prose-h2:pb-2 prose-li:my-1 prose-ol:pl-6 prose-p:leading-8">
+          <Content />
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

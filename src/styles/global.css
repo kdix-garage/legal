@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans:
+    "Noto Sans JP", "Hiragino Sans", "Yu Gothic", "YuGothic", "Meiryo",
+    sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  @apply text-neutral-950 antialiased;
+}
+
+::selection {
+  @apply bg-neutral-300 text-neutral-950;
+}

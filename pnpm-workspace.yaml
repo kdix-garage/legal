@@ -1,0 +1,10 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - astro@6.4.5
+  - miniflare@4.20260609.0
+  - wrangler@4.99.0
+overrides:
+  yaml: 2.9.0
